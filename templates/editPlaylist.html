@@ -1,0 +1,57 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<nav class="navbar is-primary">
+  <div class="navbar-brand">
+    <a href="{{url_for('showPlaylist')}}" class="nav-item">Home</a>
+    {% if 'user_id' not in session %}
+    <a href="{{url_for('showLogin')}}" class="nav-item">Login</a>
+    {% else %}
+    <a href="{{url_for('disconnect')}}" class="nav-item">Logout</a>
+    {% endif %}
+  </div>
+</nav>
+
+<article id="pagination">
+  <section class="hero is-primary is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">Edit <strong>{{playlist.name}}</strong></h1>
+        <a href="{{url_for('showPlaylist')}}">
+          <h2 class="subtitle">Go back</h2>
+        </a>
+      </div>
+    </div>
+  </section>
+</article>
+
+
+<section class="hero level-item is-light is-bold">
+	<div class="hero-body">
+		<div class="container">
+			<div class="columns is-vcentered">
+				<div class="column is-6 is-offset-3">
+					<h1 class="title">
+  					<div class="box">
+  						<form action="#" method="post">
+  							<div class="form-group">
+  								<label for="name">Name:</label>
+  									<input type="text" class="input" name = "name" value="{{playlist.name}}">
+  								<div class="padding-bottom"></div>
+  								<button type="submit" id="submit" class="button">
+  									<span>Save</span>
+  								</button>
+									<a href="{{url_for('showPlaylist')}}" class="button" name="cancel"><span>Cancel</span></a>
+                </div>
+  						</form>
+  					</div>
+					</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+		
+{% include "footer.html" %}
+{% endblock %}

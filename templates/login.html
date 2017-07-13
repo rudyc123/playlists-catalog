@@ -1,0 +1,135 @@
+{% extends "main.html" %}
+{% block content %}
+<head>
+  <script src = "//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+  <!-- Facebook Signin -->
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1652865341430716',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.8'
+    });
+    FB.AppEvents.logPageView();
+    FB.Event.subscribe('auth.login', function(response) {access_token = response.authResponse.accessToken;
+  });   
+  };
+  // Load the SDK asynchronously 
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  function sendTokenToServer() {
+    var access_token = FB.getAuthResponse()['accessToken'];
+    console.log(access_token)
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+     $.ajax({
+      type: 'POST',
+      url: '/fbconnect?state={{STATE}}',
+      processData: false,
+      data: access_token,
+      contentType: 'application/octet-stream; charset=utf-8',
+      success: function(result) {
+        // Handle or verify the server response if necessary.
+        if (result) {
+          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+         setTimeout(function() {
+          window.location.href = "/playlists";
+         }, 4000);
+
+      } else {
+        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+         }
+      }
+
+  });
+    });
+  }
+</script>
+</head>
+
+<body>
+<section class="hero is-fullheight is-light is-bold">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column is-6 is-offset-3">
+          <h1 class="title">
+            Login
+          </h1>
+          <div class="box">
+            <div class="container">
+              Please login into one of the services below to add to Playlists Catalog.
+            </div>
+            <br>
+            <div class="columns">
+              <div id="signInButton column">
+                <span class="g-signin"
+                    data-scope="openid email"
+                    data-clientid="333006861786-o4taki7019rosdlp3tjjijbafh90i2oq.apps.googleusercontent.com"
+                    data-redirecturi="postmessage"
+                    data-accesstype="offline"
+                    data-cookiepolicy="single_host_origin"
+                    data-callback="signInCallback"
+                    data-approvalprompt="force">        
+                </span></div>
+              <!-- Facebook sign in -->
+              <div class="column">
+                <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                  <a href='javascript:sendTokenToServer(0)'>Login with Facebook</a></fb:login-button>
+              </div>  
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Google+ Signin -->
+<script>
+  function signInCallback(authResult) {
+    if (authResult["code"]) {
+      // Hide sign-in button once user is authorised
+      $("#signInButton").attr("style", "display: none");
+
+      // Send one-time code to server, if server responds, write 'login successful' message to page and redirect back to home page
+      $.ajax({
+        type: "POST", 
+        url: "/gconnect?state={{STATE}}",
+        processData: false, 
+        data: authResult["code"],
+        contentType: "application/octet-stream; charset=utf-8",
+        success: function(result) {
+          // Handles server response if needed
+          if (result) {
+            $("#result").html("Login Successful!</br>" + result + "</br>Redirecting...")
+            setTimeout(function() {
+              window.location.href = "/playlists";
+            }, 4000);
+          } else if (authResult["error"]) {
+              console.log("There was an error: " + authResult["error"]);
+          } else {
+              $("#result").html("Failed to make a server-side call. Please check your configuration and console.");
+          }
+        }
+      });
+    }
+  }
+</script>
+
+
+</body>
+
+{% include "footer.html" %}
+
+{% endblock %}

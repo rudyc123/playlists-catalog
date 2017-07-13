@@ -1,0 +1,110 @@
+{% extends "main.html" %}
+{% include "header.html" %}
+{% block content %}
+
+<section class="hero is-success is-fullheight">
+  <!-- Hero header: will stay at top -->
+  <div class="hero-head">
+    <header class="nav">
+      <div class="container">
+
+        <span class="nav-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <div class="nav-right nav-menu">
+          <a href="{{url_for('showPlaylist')}}" class="nav-item">Home</a>
+          {% if 'user_id' not in session %}
+          <a href="{{url_for('showLogin')}}" class="nav-item">Login</a>
+          {% else %}
+          <a href="{{url_for('disconnect')}}" class="nav-item">Logout</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Hero content: will be in middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">Playlists Catalog</h1>
+      <h2 class="subtitle">Your favorite playlists</h2>
+    </div>
+  </div>
+
+  <!-- Hero footer: will stick to bottom -->
+  <div class="hero-foot">
+    <nav class="tabs">
+      <div class="container">
+        <ul>
+          <li class="is-active">
+            <a href="{{url_for('showPlaylist')}}">Home</a>
+          </li>
+          <li>
+            <a href="{{url_for('newPlaylist')}}">Add Playlist</a>
+          </li>
+        {% if "user_id" not in session %}
+          <li>
+            <a href="{{url_for('showLogin')}}">Login</a>
+          </li>
+        {% else %}
+          <li>
+            <a href="{{url_for('disconnect')}}">Logout</a>
+          </li>
+        {% endif %}
+
+        <div>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</section>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<section class="section">
+<div class="container">
+  <div class="columns">
+    <div class="column">
+      <div class="notification is-success">
+        <button class="delete"></button>
+          {% for message in messages %}
+            {{message}}
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endif %}
+{% endwith %}
+
+<script>
+$(document).on('click', '.notification > button.delete', function() {
+    $(this).parent().addClass('is-hidden');
+    return false;
+});
+</script>
+
+
+<section class="section">
+  <div class="container is-fluid">
+    <h1 class="title">Current Playlists</h1>
+  </div>
+  <br>
+  {% for i in playlists %}
+    <div class="container is-fluid notification">
+      <a href="{{url_for('showSongs', playlist_id = i.id)}}">
+        <h1 class="is-large">
+        {{i.name}}</h1>
+      </a>
+
+      <a href="{{url_for('editPlaylist', playlist_id = i.id)}}">Edit</a>
+      <a href="{{url_for('deletePlaylist', playlist_id = i.id)}}">Delete</a>
+    </div>
+  {% endfor %}
+</section>
+
+{% include "footer.html" %}
+{% endblock %}

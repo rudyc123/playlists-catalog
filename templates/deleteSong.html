@@ -1,0 +1,53 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<nav class="navbar is-primary">
+  <div class="navbar-brand">
+    <a href="{{url_for('showPlaylist')}}" class="nav-item">Home</a>
+    {% if 'user_id' not in session %}
+    <a href="{{url_for('showLogin')}}" class="nav-item">Login</a>
+    {% else %}
+    <a href="{{url_for('disconnect')}}" class="nav-item">Logout</a>
+    {% endif %}
+  </div>
+</nav>
+
+<article id="pagination">
+  <section class="hero is-primary is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">Are you sure you want to delete <strong>{{song.track_name}}</strong>?</h1>
+        <a href="{{url_for('showPlaylist')}}">
+          <h2 class="subtitle">Go back</h2>
+        </a>
+      </div>
+    </div>
+  </section>
+</article>
+
+<section class="hero level-item is-light is-bold">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column is-6 is-offest-3">
+          <h1 class="title"></h1>
+          <div class="box">
+            <form action="#" method="post">
+              <button class="button" type="submit" id="submit">
+                <span>Delete</span>
+              </button>
+              <a href="{{url_for('showSongs', playlist_id = playlist_id)}}" name="cancel" class="button">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="row">
+  <div class="col-md-6 col-md-offset-1 padding-top">
+    
+  </div>
+</div>
+{% include "footer.html" %}
+{% endblock %}

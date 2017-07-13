@@ -1,0 +1,119 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+{# <body onload="newSongPopUp()""> #}
+<nav class="navbar is-primary">
+  <div class="navbar-brand">
+    <a href="{{url_for('showPlaylist')}}" class="nav-item">Home</a>
+    {% if 'user_id' not in session %}
+    <a href="{{url_for('showLogin')}}" class="nav-item">Login</a>
+    {% else %}
+    <a href="{{url_for('disconnect')}}" class="nav-item">Logout</a>
+    {% endif %}
+  </div>
+</nav>
+
+<article id="pagination">
+  <section class="hero is-primary is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">{{playlist.name}}</h1>
+        <a href="{{url_for('showPlaylist')}}">
+          <h2 class="subtitle">Go back</h2>
+        </a>
+      </div>
+    </div>
+  </section>
+</article>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<section class="section">
+<div class="container">
+  <div class="columns">
+    <div class="column">
+      <div class="notification is-danger">
+        <button class="delete"></button>
+          {% for message in messages %}
+            {{message}}
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endif %}
+{% endwith %}
+
+<script>
+$(document).on('click', '.notification > button.delete', function() {
+    $(this).parent().addClass('is-hidden');
+    return false;
+});
+</script>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-3">
+        <div class="card">
+        {% if creator != [] %}
+
+          <div class="card-content">
+            <a href="#" class="card-avatar image is-64x64">
+              <img src="{{creator.picture}}" alt="" class="card-avatar-img">
+            </a>
+            <div class="card-user">
+              <div class="card-user-name">
+                <a href="#">{{creator.name}}</a>
+              </div>
+              <span>
+                <a href="#"><span>{{creator.email}}</span></a>
+              </span>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Song Title</th>
+              <th>Artist</th>
+              <th>Album</th>
+              <th><i class="fa fa-ellipsis-h"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+          {% if songs != [] %}
+          {% for i in songs %}
+            <tr>
+              <td>{{i.track_name}}</td>
+              <td>{{i.artist_name}}</td>
+              <td>{{i.album_name}}</td>
+              <td></td>
+            </tr>
+            {% endfor %}
+          {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function newSongPopUp() {alert('You are not authorized to add songs to this playlist. Please create your own in order to add songs.');}
+</script>
+</body>
+{% include "footer.html" %}
+{% endblock %}

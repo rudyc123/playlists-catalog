@@ -16,4 +16,4 @@ A basic catalog web app where people can post their favourite playlists and shar
 	- SQLAlchemy
 - As the app uses authentication from Google and Facebook, obtain a client id and client secret from both. Then, open the project.py file and replace the clientid and client secret with yours. 
 - Create a sample database by running database_setup.py
-- Run project.py
+- Run project.py# playlists-catalog
